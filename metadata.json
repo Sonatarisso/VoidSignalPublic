@@ -1,0 +1,5 @@
+{
+  "name": "Void Signal Lab",
+  "description": "A cooperative signal research game inspired by Voices of the Void. Work together in an isolated mountain lab to gather, analyze, and process signals from the deep void.",
+  "requestFramePermissions": ["camera"]
+}
