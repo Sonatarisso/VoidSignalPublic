@@ -10,14 +10,7 @@ jobs:
   build-and-release:
     permissions:
       contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: "windows-latest"
-          - platform: "ubuntu-22.04"
-
-    runs-on: ${{ matrix.platform }}
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -29,13 +22,7 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'windows-latest' && 'x86_64-pc-windows-msvc' || '' }}
-
-      - name: install Linux dependencies
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libsoup2.4-dev
+          targets: x86_64-pc-windows-msvc
 
       - name: install dependencies
         run: npm install
@@ -51,4 +38,4 @@ jobs:
           releaseBody: "THE VOID IS EXPANDING. DO NOT PROCESS THE SIGNALS."
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.platform == 'windows-latest' && '--target x86_64-pc-windows-msvc' || '' }}
+          args: --target x86_64-pc-windows-msvc
