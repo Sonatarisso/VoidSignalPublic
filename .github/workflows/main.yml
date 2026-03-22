@@ -27,6 +27,13 @@ jobs:
       - name: install dependencies
         run: npm install
 
+      - name: collect steam dll
+        run: |
+          cargo build -p steamworks-sys --release
+          mkdir -p src-tauri/resources
+          find src-tauri/target/release -name "steam_api64.dll" -exec cp {} src-tauri/resources/ \;
+        shell: bash
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
