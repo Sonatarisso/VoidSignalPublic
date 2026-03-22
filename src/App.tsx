@@ -66,9 +66,6 @@ const UI_ERROR = "error";
 const UI_SUCCESS = "success";
 
 const playSound = (type: string, volume = 0.2) => {
-  // Respect gameMuted from state (passed via closure if needed, but better as a prop)
-  // Since playSound is defined outside App, I'll move it or wrap it
-  initAudio();
   if (type === UI_CLICK) playUiClick(volume);
   if (type === UI_ERROR) playUiError(volume);
   if (type === UI_SUCCESS) playUiSuccess(volume);
@@ -385,6 +382,7 @@ export default function App() {
 
   // Tauri Steamworks & File Harvesting Check
   useEffect(() => {
+    initAudio();
     setModuleDb(MODULE_DATABASE);
     
     // Initialize browser dev tools for debugging
