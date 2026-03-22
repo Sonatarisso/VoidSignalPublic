@@ -1,49 +1,37 @@
-name: "ABYSSAL_CONTAGION_BUILD"
-
-on:
-  push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
-
-jobs:
-  build-and-release:
-    permissions:
-      contents: write
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-pc-windows-msvc
-
-      - name: install dependencies
-        run: npm install
-
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DISCORD_APP_ID: ${{ secrets.DISCORD_APP_ID }}
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        with:
-          tagName: v__VERSION__ # the action will replace this with the version from package.json
-          releaseName: "Void Signal Lab v__VERSION__ [ABYSSAL_SINGULARITY]"
-          releaseBody: "THE VOID IS EXPANDING. DO NOT PROCESS THE SIGNALS."
-          releaseDraft: false
-          prerelease: false
-          args: --target x86_64-pc-windows-msvc
-
-      - name: upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: void-signal-lab-windows
-          path: |
-            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
-            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/setup.exe
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "void_signal_lab",
+  "version": "0.1.0",
+  "identifier": "com.voidsignal.lab",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Void Signal Lab",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: https://*; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://* ws://*;"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
